@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String operation;
+    private String operation = "0";
     private TextView operationTxv;
     private Button clearBtn;
     private int[] numberBtns = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4
@@ -38,7 +38,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view.getId() != R.id.btnC) {
             Button btn = (Button)view;
-            operation = operation + btn.getText();
+
+            if (operation.compareTo("0") == 0)
+                operation = btn.getText().toString();
+            else
+                operation = operation + btn.getText();
         }
         else
             operation = "0";
