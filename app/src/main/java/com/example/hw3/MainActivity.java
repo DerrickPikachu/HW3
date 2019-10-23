@@ -31,21 +31,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i : operatorBtns)
             findViewById(i).setOnClickListener(this);
 
+        findViewById(R.id.btnEqual).setOnClickListener(this);
+
         clearBtn.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() != R.id.btnC) {
-            Button btn = (Button)view;
+            String nextInput = ((Button)view).getText().toString();
 
-            if (operation.compareTo("0") == 0)
-                operation = btn.getText().toString();
-            else
-                operation = operation + btn.getText();
+            if (nextInput.compareTo(getResources().getString(R.string.equal)) == 0) {
+                //get the operation result
+                Arithmetic arithmetic = new Arithmetic(operation);
+                operation = Integer.toString(arithmetic.getResult());
+            }
+            else if (operation.compareTo("0") == 0) {
+                operation = nextInput;
+            }
+            else {
+                operation = operation + nextInput;
+            }
         }
         else
             operation = "0";
+
         operationTxv.setText(operation);
     }
 }
