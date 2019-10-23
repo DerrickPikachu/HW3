@@ -39,16 +39,31 @@ public class Arithmetic {
     public Arithmetic(String o) {
         //initialize operation
         operation = o;
-        numberToken = operation.split("\\+|-|\\*|/");
         operatorToken = new String[0];
-        String[] initial = operation.split("0|1|2|3|4|5|6|7|8|9");
+        numberToken = new String[0];
+        String[] initialNum = operation.split("\\+|-|\\*|/");
+        String[] initialOp = operation.split("0|1|2|3|4|5|6|7|8|9");
 
-        ArrayList<String> tem = new ArrayList<>();
-        for (String s : initial) {
-            if (s.compareTo("") != 0)
-                tem.add(s);
+        ArrayList<String> temNum = new ArrayList<>();
+        for (String i : initialNum) {
+            if (i.compareTo("") != 0)
+                temNum.add(i);
         }
-        operatorToken = tem.toArray(operatorToken);
+
+        ArrayList<String> temOp = new ArrayList<>();
+        for (String s : initialOp) {
+            if (s.compareTo("") != 0)
+                temOp.add(s);
+        }
+
+        //handle the first number is negative
+        if (operation.charAt(0) == '-') {
+            temNum.set(0, "-" + temNum.get(0));
+            temOp.remove(0);
+        }
+
+        numberToken = temNum.toArray(numberToken);
+        operatorToken = temOp.toArray(operatorToken);
 
         //initialize priority
         priority = new HashMap<>();
