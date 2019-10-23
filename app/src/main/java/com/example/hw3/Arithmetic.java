@@ -10,7 +10,7 @@ public class Arithmetic {
     private String[] operatorToken;
     private HashMap<String, Integer> priority;
 
-    private int operate(Stack<Integer> numberSt, Stack<String> operatorSt) {
+    private int operate(Stack<Integer> numberSt, Stack<String> operatorSt) throws ArithmeticException{
         int num1, num2, res = 0;
         String operator = operatorSt.peek();
         operatorSt.pop();
@@ -19,18 +19,23 @@ public class Arithmetic {
         num2 = numberSt.peek();
         numberSt.pop();
 
-        switch (operator) {
-            case "+":
-                res = num1 + num2;
-                break;
-            case "-":
-                res = num2 - num1;
-                break;
-            case "*":
-                res = num1 * num2;
-                break;
-            case "/":
-                res = num2 / num1;
+        try {
+            switch (operator) {
+                case "+":
+                    res = num1 + num2;
+                    break;
+                case "-":
+                    res = num2 - num1;
+                    break;
+                case "*":
+                    res = num1 * num2;
+                    break;
+                case "/":
+                    res = num2 / num1;
+            }
+        }
+        catch (ArithmeticException e) {
+            throw e;
         }
 
         return res;
@@ -89,7 +94,7 @@ public class Arithmetic {
         operation = o;
     }
 
-    public int getResult() {
+    public int getResult() throws Exception{
         Stack<String> operatorSt = new Stack<>();
         Stack<Integer> numberSt = new Stack<>();
 
@@ -103,6 +108,7 @@ public class Arithmetic {
         }
         else {
             //throw exception
+            throw new Exception("invalid input");
         }
 
         //initialize
@@ -113,9 +119,15 @@ public class Arithmetic {
         for (int i=2, o=1; i<numberToken.length && o<operatorToken.length; i++, o++) {
             String op = operatorToken[o];
 
-            while (!operatorSt.empty() && priority.get(op) >= priority.get(operatorSt.peek())) {
-                //operate previous result
-                numberSt.push(operate(numberSt, operatorSt));
+            try {
+                while (!operatorSt.empty() && priority.get(op) >= priority.get(operatorSt.peek())) {
+                    //operate previous result
+                    numberSt.push(operate(numberSt, operatorSt));
+                }
+            }
+            catch (ArithmeticException e) {
+                //divided by zero
+                throw e;
             }
 
             //push into stack

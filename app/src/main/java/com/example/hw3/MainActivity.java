@@ -43,8 +43,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if (nextInput.compareTo(getResources().getString(R.string.equal)) == 0) {
                 //get the operation result
-                Arithmetic arithmetic = new Arithmetic(operation);
-                operation = Integer.toString(arithmetic.getResult());
+                try {
+                    Arithmetic arithmetic = new Arithmetic(operation);
+                    operation = Integer.toString(arithmetic.getResult());
+                }
+                catch (ArithmeticException e) {
+                    operation = "CAN NOT DIVIDED BY ZERO";
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
             }
             else if (operation.compareTo("0") == 0) {
                 operation = nextInput;
