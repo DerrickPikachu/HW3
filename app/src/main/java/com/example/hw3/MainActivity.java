@@ -16,6 +16,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 , R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9};
     private int[] operatorBtns = {R.id.btnPlus, R.id.btnMinus, R.id.btnMul, R.id.btnDiv};
     private boolean isPreOp = false;
+    private boolean isFirstZero = true;
+    private boolean isOperated = false;
+    private boolean error = false;
+
+    private void setOperatorAvailable(boolean set) {
+        for (int i : operatorBtns)
+            findViewById(i).setClickable(set);
+        findViewById(R.id.btnEqual).setClickable(set);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +56,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     Arithmetic arithmetic = new Arithmetic(operation);
                     operation = Integer.toString(arithmetic.getResult());
+                    isOperated = true;
                 }
                 catch (ArithmeticException e){
                     operation = "CAN NOT DIVIDED BY ZERO";
+                    isOperated = true;
+                    error = true;
+
+                    setOperatorAvailable(false);
                 }
                 catch (Exception e){
                     System.out.println(e);
                 }
             }
-            else if (operation.compareTo("0") == 0 && Character.isDigit(nextInput.charAt(0))) {
+            else if (isOperated && Character.isDigit(nextInput.charAt(0))) {
                 operation = nextInput;
+                isOperated = false;
+
+                if (error) {
+                    error = false;
+                    setOperatorAvailable(true);
+                }
+            }
+            else if (isFirstZero && Character.isDigit(nextInput.charAt(0))) {
+                operation = operation.substring(0, operation.length() - 1) + nextInput;
             }
             else {
                 if (!Character.isDigit(nextInput.charAt(0))) {
@@ -66,13 +89,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 else {
                     operation = operation + nextInput;
                 }
+
+                isOperated = false;
             }
 
+            isFirstZero = ((isPreOp || isFirstZero) && nextInput.compareTo("0") == 0)? true:false;
             isPreOp = (Character.isDigit(nextInput.charAt(0)))? false:true;
         }
         else {
             operation = "0";
             isPreOp = false;
+            isFirstZero = true;
+            isOperated = false;
+            setOperatorAvailable(true);
         }
 
         operationTxv.setText(operation);
