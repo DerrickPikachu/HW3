@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int[] numberBtns = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4
                                 , R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9};
     private int[] operatorBtns = {R.id.btnPlus, R.id.btnMinus, R.id.btnMul, R.id.btnDiv};
+    private boolean isPreOp = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,22 +48,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Arithmetic arithmetic = new Arithmetic(operation);
                     operation = Integer.toString(arithmetic.getResult());
                 }
-                catch (ArithmeticException e) {
+                catch (ArithmeticException e){
                     operation = "CAN NOT DIVIDED BY ZERO";
                 }
                 catch (Exception e){
                     System.out.println(e);
                 }
             }
-            else if (operation.compareTo("0") == 0) {
+            else if (operation.compareTo("0") == 0 && Character.isDigit(nextInput.charAt(0))) {
                 operation = nextInput;
             }
             else {
-                operation = operation + nextInput;
+                if (!Character.isDigit(nextInput.charAt(0))) {
+                    if (!isPreOp)
+                        operation = operation + nextInput;
+                }
+                else {
+                    operation = operation + nextInput;
+                }
             }
+
+            isPreOp = (Character.isDigit(nextInput.charAt(0)))? false:true;
         }
-        else
+        else {
             operation = "0";
+            isPreOp = false;
+        }
 
         operationTxv.setText(operation);
     }
